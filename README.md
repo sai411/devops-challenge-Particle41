@@ -26,3 +26,14 @@ docker run --rm -p 8080:8080 simpletimeservice:latest
 
 # test
 curl http://localhost:8080/
+
+# To Deploy the image in the AWS, Run the below commangs for creating the required infrastructure
+
+# initialize
+terraform init
+
+# plan (show changes)
+terraform plan -var="app_image=yourdockerhubuser/simpletimeservice:latest"
+
+# apply (create infra)
+terraform apply -var="app_image=yourdockerhubuser/simpletimeservice:latest" -auto-approve
