@@ -32,9 +32,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: ./app
+          context: .
           push: true
           tags: ${{ github.event.inputs.image_name }}
+          working-directory: ./app
   
   terraform:
     needs: build-and-push
