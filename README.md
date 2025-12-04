@@ -54,7 +54,7 @@ AWS CLI or AWS credentials (via env vars or profile or IAM role) which mentioned
 Docker image available publicly (DockerHub or ECR)
 ```
 
-Authentication:
+# Authentication:
 
 You must configure AWS credentials locally , there are two ways, one is to add the credentials in providers.tf file and other way is to configure in your local cli and run the terraform commands.
 
@@ -77,8 +77,9 @@ export AWS_ACCESS_KEY_ID=...
 export AWS_SECRET_ACCESS_KEY=...
 export AWS_REGION=us-east-1
 
-Authorization:
+# Authorization:
 
+```
 Add required policies/permissions to the above users/role to provide access to provision the resources.
 
 Ensure your IAM user/role has permissions for:
@@ -90,8 +91,9 @@ Task Definitions & ECS Service
 Load Balancer + Target Groups
 CloudWatch Logs
 IAM role creation for ECS execution
+```
 
-Terraform backend to store state file:
+# Terraform backend to store state file:
 
 terraform/backend.tf example included for S3 which has lock file mechanisim anf can be used for storing the sttefile.
 
