@@ -95,7 +95,7 @@ IAM role creation for ECS execution
 
 # Terraform backend to store state file:
 
-terraform/backend.tf example included for S3 which has lock file mechanism and can be used for storing the statefile.
+terraform/backend.tf included for S3 which has lock file mechanism and can be used for storing the statefile.I have used an s3 bucket with name: simple-time-service-project , if you want to continue with the script , please create an S3 buvket in your AWS account as well, or else update the s3 name name in terraform/backend.tf 
 
 # Follow the steps below to run and provision the resources and finally deploy the application in ECS by using below commands
 
