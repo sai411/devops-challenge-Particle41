@@ -42,7 +42,7 @@ docker push yourdockerhubuser/simpletimeservice:1.0.0
 
 Then the image will be available in your remote repository can be used in kubernetes(EKS) or ECS based deployments.
 
-# To Deploy the image in the AWS, Run the below commangs for creating the required infrastructure
+# To provision the infrastructure resources in the AWS, Run the below commands locally once the repo was cloned
 
 Prereqs:
 
@@ -116,7 +116,9 @@ terraform apply -var="app_image=yourdockerhubuser/simpletimeservice:latest" -aut
 
 After apply completes, Terraform prints alb_dns_name. Open http://<alb_dns_name>/
 
-CI-CD pipeline:
+# CI-CD pipeline:
+
+This pipeline will consists of two jobs, one is the CI job which performs cloning to docker build and push to repository. And the other one is terraform job which will provision the required resources and deploy the generated image in the ECS cluster.
 
 ```
 Go to the Actions tab and click on "Run workflow".
@@ -132,6 +134,8 @@ in your GitHub Actions → Settings → Secrets:
 - AWS_SECRET_ACCESS_KEY
 - DOCKERHUB_USERNAME
 - DOCKERHUB_TOKEN
+
+
 ```
 
 Once added, the pipeline will:
