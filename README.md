@@ -20,7 +20,7 @@ Prereqs:
 git clone https://github.com/sai411/devops-challenge-Particle41.git
 
 # Change directory
-cd devops-challenge-Particle41/app
+cd devops-challenge-Particle41/simple-time-service/app
 
 # build image
 docker build -t simpletimeservice:local .
@@ -101,7 +101,7 @@ terraform/backend.tf included for S3 which has lock file mechanism and can be us
 
 # move to correct directory
 ```
-cd terraform
+cd devops-challenge-Particle41/simple-time-service/terraform
 ```
 
 # initialize
