@@ -19,7 +19,7 @@ Prereqs:
 # Clone
 git clone
 
-# change directory
+# Change directory
 cd devops-challenge-Particle41/app
 
 # build image
@@ -42,14 +42,14 @@ docker push yourdockerhubuser/simpletimeservice:1.0.0
 
 Then the image will be available in your remote repository can be used in kubernetes(EKS) or ECS based deployments.
 
-# To provision the infrastructure resources in the AWS, Run the below commands locally once the repo was cloned
+# To provision the infrastructure resources in the AWS, Run the below commands locally after cloning the repo
 
 Prereqs:
 
 ```text
 Terraform >= 1.4
 
-AWS CLI or AWS credentials (via env vars or profile or IAM role) which mentioned below
+AWS CLI or AWS credentials (via env vars or profile or IAM role) as mentioned below
 
 Docker image available publicly (DockerHub or ECR)
 ```
@@ -61,7 +61,7 @@ You must configure AWS credentials locally , there are two ways, one is to add t
 ```bash
 aws configure
 ```
-Then Provide the values it asked for 
+Then provide the values it asks for
 
 ```
 AWS Access Key ID
@@ -71,7 +71,7 @@ AWS Secret Access Key
 AWS Region (example: us-east-1)
 ```
 
-You can also add them as Environment variables, When you were assuming any role, once you added the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY of your IAM user by above command.
+You can also add them as Environment variables, When you are assuming any role, once you added the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY of your IAM user by above command.
 
 export AWS_ACCESS_KEY_ID=...
 export AWS_SECRET_ACCESS_KEY=...
@@ -95,7 +95,9 @@ IAM role creation for ECS execution
 
 # Terraform backend to store state file:
 
-terraform/backend.tf example included for S3 which has lock file mechanisim anf can be used for storing the sttefile.
+terraform/backend.tf example included for S3 which has lock file mechanism and can be used for storing the statefile.
+
+# Follow the steps below to run and provision the resources and finally deploy the application in ECS by using below commands
 
 # move to correct directory
 ```
@@ -120,7 +122,7 @@ After apply completes, Terraform prints alb_dns_name. Open http://<alb_dns_name>
 
 # CI-CD pipeline:
 
-This pipeline will consists of two jobs, one is the CI job which performs cloning to docker build and push to repository. And the other one is terraform job which will provision the required resources and deploy the generated image in the ECS cluster.
+This pipeline consists of two jobs, one is the CI job which performs cloning to docker build and push to repository. And the other one is the Terraform job which will provision the required resources and deploy the generated image in the ECS cluster.
 
 ```
 Go to the Actions tab and click on "Run workflow".
