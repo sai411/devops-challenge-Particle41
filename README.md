@@ -17,7 +17,7 @@ Prereqs:
 
 ```bash
 # Clone
-git clone
+git clone https://github.com/sai411/devops-challenge-Particle41.git
 
 # Change directory
 cd devops-challenge-Particle41/app
