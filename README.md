@@ -26,7 +26,7 @@ cd devops-challenge-Particle41/simple-time-service/app
 docker build -t simpletimeservice:local .
 
 # run
-docker run --rm -p 8080:8080 simpletimeservice:latest
+docker run --rm -p 8080:8080 simpletimeservice:local
 
 # test
 curl http://localhost:8080/
