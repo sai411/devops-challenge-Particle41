@@ -57,3 +57,6 @@ jobs:
       - name: Terraform apply
         working-directory: simple-time-service/terraform
         run: terraform apply -auto-approve -var="app_image=${{ github.event.inputs.image_name }}"
+      - name: destroy
+        working-directory: simple-time-service/terraform
+        run: terraform destroy -auto-approve
