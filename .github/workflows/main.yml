@@ -10,58 +10,48 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
-    # expose as job output so other jobs can read it
     outputs:
       IMAGE_TAG: ${{ steps.export_tag.outputs.IMAGE_TAG }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Validate input
-        run: |
-          echo "image_repo_name='${{ github.event.inputs.image_repo_name }}'"
-          if [ -z "${{ github.event.inputs.image_repo_name }}" ]; then
-            echo "ERROR: image_repo_name is empty. Provide a value in workflow_dispatch inputs."
-            exit 1
-          fi
+    - name: Validate input
+      run: |
+        echo "image_repo_name='${{ github.event.inputs.image_repo_name }}'"
+        if [ -z "${{ github.event.inputs.image_repo_name }}" ]; then
+          echo "ERROR: image_repo_name is empty."
+          exit 1
+        fi
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v4
-        with:
-          context: simple-time-service/app
-          push: true
-          tags: |
-            ${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}
-            ${{ github.event.inputs.image_repo_name }}/simpletimeservice:latest
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v4
+      with:
+        context: simple-time-service/app
+        push: true
+        tags: |
+          ${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}
+          ${{ github.event.inputs.image_repo_name }}/simpletimeservice:latest
 
-      - name: Show built tags (debug)
-        run: |
-          echo "Built tags:"
-          echo "${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}"
-          echo "${{ github.event.inputs.image_repo_name }}/simpletimeservice:latest"
-
-      - name: Export image tag for terraform
-        id: export_tag
-        run: |
-          IMAGE="${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}"
-          echo "IMAGE=$IMAGE"
-          # write the step output using the exact required syntax
-          echo "IMAGE_TAG=$IMAGE" >> "$GITHUB_OUTPUT"
+    - name: Export image tag for terraform
+      id: export_tag
+      run: |
+        IMAGE="${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}"
+        echo "IMAGE_TAG=$IMAGE" >> "$GITHUB_OUTPUT"
 
   terraform:
     needs: build-and-push
