@@ -115,21 +115,21 @@ terraform/backend.tf included for S3 which has lock file mechanism and can be us
 
 # Follow the steps below to run and provision the resources and finally deploy the application in ECS by using below commands
 
-# move to correct directory
+# Move to correct directory
 ```
 cd devops-challenge-Particle41/simple-time-service/terraform
 ```
 
-# initialize
+# Initialize
 ```bash
 terraform init
 ```
-# plan (show changes)
+# Plan (show changes)
 ```
 terraform plan -var="app_image=yourdockerhubuser/simpletimeservice:latest"
 ```
 
-# apply (create infra)
+# Apply (create infra)
 ```
 terraform apply -var="app_image=yourdockerhubuser/simpletimeservice:latest" -auto-approve
 ```
@@ -148,12 +148,14 @@ You can enable them anytime.)
 
 Note that NO secrets are included in this repository.
 To run the CI/CD pipeline, please fork the repository and add the following secrets
-in your GitHub Actions → Settings → Secrets:
+In your GitHub Actions → Settings → Secrets:
 
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
-- DOCKERHUB_USERNAME
 - DOCKERHUB_TOKEN
+
+In your GitHub Actions → Settings → variables:
+- DOCKERHUB_USERNAME
 
 
 ```
