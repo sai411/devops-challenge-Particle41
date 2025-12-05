@@ -63,6 +63,6 @@ jobs:
       - name: Terraform apply
         working-directory: simple-time-service/terraform
         run: terraform apply -auto-approve -var="app_image=${{ needs.build-and-push.outputs.docker_image }}"
-      # - name: destroy
-      #   working-directory: simple-time-service/terraform
-      #   run: terraform destroy -auto-approve
+      - name: destroy
+        working-directory: simple-time-service/terraform
+        run: terraform destroy -auto-approve
