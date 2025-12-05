@@ -147,7 +147,7 @@ in your GitHub Actions → Settings → Secrets:
 
 Once added, the pipeline will:
 
-1. Build the Docker image (as a latest tag , example image DockerUserName/simpletimeservice-<build-number>:latest)
+1. Build the Docker image (as a build_number tag, example image DockerUserName/simpletimeservice:<build-number>)
 
 2. Push to DockerHub
 
