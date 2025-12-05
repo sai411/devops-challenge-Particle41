@@ -13,7 +13,6 @@ variable "name_prefix" {
 variable "app_image" {
   description = "Container image to run (public DockerHub or ECR)"
   type        = string
-  default     = "sai411/simpletimeservice:latest"
 }
 
 variable "vpc_cidr" {
