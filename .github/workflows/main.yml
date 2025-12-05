@@ -2,8 +2,8 @@ name: CI-CD
 on:
   workflow_dispatch:
     inputs:
-      image_name:
-        description: "Enter Docker image name (example: yourdockerhubuser/simpletimeservice:latest)"
+      image_repo_name:
+        description: "Enter Docker image repository name (example: yourdockerhubuser)"
         required: true
   # push:
   #   branches: [ main ]
@@ -31,8 +31,7 @@ jobs:
         with:
           context: simple-time-service/app
           push: true
-          tags: ${{ github.event.inputs.image_name }}
-
+          tags: ${{ github.event.inputs.image_repo_name }}/simpletimeservice-${{ github.run_number }}:latest
   
   terraform:
     needs: build-and-push
