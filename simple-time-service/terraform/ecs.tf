@@ -136,6 +136,7 @@ resource "aws_ecs_service" "service" {
     container_name   = "simpletime"
     container_port   = 8080
   }
-
+  
   depends_on = [aws_lb_listener.http]
+  wait_for_steady_state = true 
 }
