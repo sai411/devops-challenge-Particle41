@@ -33,6 +33,15 @@ docker run --rm -p 8080:8080 simpletimeservice:local
 curl http://localhost:8080/
 ```
 
+# Verify the Output
+Sample:
+```
+{
+  "ip": "223.185.50.194",
+  "timestamp": "2025-12-05T22:43:05.130592+05:30"
+}
+```
+
 # To push docker image to a repository Dockerhub
 
 ```
@@ -42,6 +51,8 @@ docker push yourdockerhubuser/simpletimeservice:1.0.0
 ```
 
 Then the image will be available in your remote repository can be used in kubernetes(EKS) or ECS based deployments.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # To provision the infrastructure resources in the AWS, Run the below commands locally after cloning the repo
 
