@@ -5,18 +5,27 @@ on:
       image_repo_name:
         description: "Enter Docker image repository name (example: yourdockerhubuser)"
         required: true
-  # push:
-  #   branches: [ main ]
+        default: "yourdockerhubuser"
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    # expose as job output so other jobs can read it
     outputs:
       IMAGE_TAG: ${{ steps.export_tag.outputs.IMAGE_TAG }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate input
+        run: |
+          echo "image_repo_name='${{ github.event.inputs.image_repo_name }}'"
+          if [ -z "${{ github.event.inputs.image_repo_name }}" ]; then
+            echo "ERROR: image_repo_name is empty. Provide a value in workflow_dispatch inputs."
+            exit 1
+          fi
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -31,7 +40,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push
-        id: dockerbuild
+        id: docker_build
         uses: docker/build-push-action@v4
         with:
           context: simple-time-service/app
@@ -39,19 +48,32 @@ jobs:
           tags: |
             ${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}
             ${{ github.event.inputs.image_repo_name }}/simpletimeservice:latest
+
+      - name: Show built tags (debug)
+        run: |
+          echo "Built tags:"
+          echo "${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}"
+          echo "${{ github.event.inputs.image_repo_name }}/simpletimeservice:latest"
+
       - name: Export image tag for terraform
         id: export_tag
         run: |
-         IMAGE="${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}"
-         echo "IMAGE_TAG=$IMAGE" >> "$GITHUB_OUTPUT"
-
+          IMAGE="${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}"
+          echo "IMAGE=$IMAGE"
+          # write the step output using the exact required syntax
+          echo "IMAGE_TAG=$IMAGE" >> "$GITHUB_OUTPUT"
 
   terraform:
-    runs-on: ubuntu-latest
     needs: build-and-push
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: show job output passed from build job
+        run: |
+          echo "needs.build-and-push.outputs.IMAGE_TAG='${{ needs.build-and-push.outputs.IMAGE_TAG }}'"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -67,6 +89,8 @@ jobs:
         working-directory: simple-time-service/terraform
         run: terraform init
 
-      - name: Terraform apply
+      - name: Terraform apply (uses the image tag)
         working-directory: simple-time-service/terraform
-        run: terraform apply -auto-approve -var="app_image=${{ needs.build-and-push.outputs.IMAGE_TAG }}"
+        run: |
+          echo "Running terraform apply with app_image='${{ needs.build-and-push.outputs.IMAGE_TAG }}'"
+          terraform apply -auto-approve -var="app_image=${{ needs.build-and-push.outputs.IMAGE_TAG }}"
