@@ -85,11 +85,13 @@ AWS Secret Access Key
 AWS Region (example: us-east-1)
 ```
 
-You can also add them as Environment variables, When you are assuming any role, once you added the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY of your IAM user by above command.
+You can also add them as Environment variables, to use the IAM user
 
 export AWS_ACCESS_KEY_ID=...
 export AWS_SECRET_ACCESS_KEY=...
-export AWS_REGION=us-east-1
+export AWS_REGION=us-east-1. 
+
+If you would like to use IAM role, you need to add the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY and aws_session_token of your IAM role, only after adding the user details.
 
 # Authorization:
 
