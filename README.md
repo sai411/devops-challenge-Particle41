@@ -1,7 +1,8 @@
 # devops-challenge-Particle41
 # SimpleTimeService
 
-Tiny microservice that returns a JSON with timestamp and visitor ip.
+Tiny microservice that returns a JSON with timestamp and visitor ip. The SimpleTimeService application is a lightweight Flask-based API that listens on port 8080 and returns the current timestamp along with the requester’s IP address in JSON format. When a user or client makes an HTTP request to the root endpoint (/), the request is received by the containerized application running inside an ECS Fargate task. The application determines the client IP (direct or forwarded through the load balancer), generates an ISO-formatted timestamp, and returns both values as a simple JSON response. The container runs with Gunicorn in a non-root user context to maintain secure runtime practices while keeping the app minimal and fast.
+
 This repository contains:
 
 app/ : Python Flask app + Dockerfile (runs as a non-root user)
@@ -43,6 +44,8 @@ docker push yourdockerhubuser/simpletimeservice:1.0.0
 Then the image will be available in your remote repository can be used in kubernetes(EKS) or ECS based deployments.
 
 # To provision the infrastructure resources in the AWS, Run the below commands locally after cloning the repo
+
+The infrastructure is designed using AWS best practices to securely host containerized applications. A VPC is created with both public and private subnets so that internet-facing components like the Application Load Balancer operate in public subnets, while the ECS Fargate tasks run in private subnets without direct internet exposure. A NAT Gateway enables the tasks to securely pull images from DockerHub or ECR. The ALB receives incoming traffic, forwards it to the ECS service registered under a target group, and performs health checks to ensure availability. ECS Fargate is used to remove the need for managing EC2 nodes and to automatically scale and secure the workload. CloudWatch Logs capture container logs, IAM roles secure the task execution.
 
 Prereqs:
 
