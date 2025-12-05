@@ -11,6 +11,8 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    outputs:
+      IMAGE_TAG: ${{ steps.export_tag.outputs.IMAGE_TAG }}
     steps:
       - uses: actions/checkout@v4
 
@@ -34,7 +36,11 @@ jobs:
           tags: |
             ${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}
             ${{ github.event.inputs.image_repo_name }}/simpletimeservice:latest
-  
+      - name: Export image tag for terraform
+        id: export_tag
+        run: |
+          echo "IMAGE_TAG=${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}" >> $GITHUB_OUTPUT
+
   terraform:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -57,7 +63,7 @@ jobs:
 
       - name: Terraform apply
         working-directory: simple-time-service/terraform
-        run: terraform apply -auto-approve -var="app_image=${{ github.event.inputs.image_name }}"
+        run: terraform apply -auto-approve -var="app_image=${{ needs.build-and-push.outputs.IMAGE_TAG }}"
       - name: destroy
         working-directory: simple-time-service/terraform
         run: terraform destroy -auto-approve
