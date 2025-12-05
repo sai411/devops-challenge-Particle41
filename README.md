@@ -132,6 +132,9 @@ terraform plan -var="app_image=yourdockerhubuser/simpletimeservice:latest"
 # Apply (create infra)
 ```
 terraform apply -var="app_image=yourdockerhubuser/simpletimeservice:latest" -auto-approve
+
+To try with my Image (already exists, use this command)
+terraform apply -var="app_image=sai411/simpletimeservice:latest" -auto-approve
 ```
 
 After apply completes, Terraform prints alb_dns_name. Open http://<alb_dns_name>/
