@@ -39,11 +39,11 @@ jobs:
           tags: |
             ${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}
             ${{ github.event.inputs.image_repo_name }}/simpletimeservice:latest
-
       - name: Export image tag for terraform
         id: export_tag
         run: |
-          echo "IMAGE_TAG=${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}" >> $GITHUB_OUTPUT
+         IMAGE="${{ github.event.inputs.image_repo_name }}/simpletimeservice:${{ github.run_number }}"
+         echo "IMAGE_TAG=$IMAGE" >> "$GITHUB_OUTPUT"
 
 
   terraform:
