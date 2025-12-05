@@ -1,38 +1,40 @@
-# Dockerfile
-FROM python:3.11-slim
+# Stage 1 — Build Environment #
+FROM python:3.11-slim AS builder
 
-# create a non-root user
-ENV APP_USER=appuser
-ENV APP_HOME=/home/$APP_USER
+# Creating app directory
+WORKDIR /app
 
-# create user and app directory
-RUN addgroup --system $APP_USER && adduser --system --ingroup $APP_USER $APP_USER \
-    && mkdir -p $APP_HOME/app
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
-WORKDIR $APP_HOME/app
 
-# Install runtime deps
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
- && rm -rf /var/lib/apt/lists/*
-
-# Copy only what's necessary
 COPY requirements.txt .
 
-# Install python deps
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies into a clean folder
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-# Copy app
+################################################################################################
+# Stage 2 - which is required to make image smaller with minimal code file only
+FROM python:3.11-alpine
+
+# Create a non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+WORKDIR /app
+
+# Copying installed libraries from previous stage
+COPY --from=builder /install /usr/local
+
+# Copy application code
 COPY main.py .
 
-# Set permissions
-RUN chown -R $APP_USER:$APP_USER $APP_HOME
-
 # Switch to non-root user
-USER $APP_USER
+USER appuser
 
-# Expose default port
+# Expose port
 EXPOSE 8080
 
-# Run with gunicorn for production
+# Run using gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "main:app", "--workers", "2", "--threads", "4"]
